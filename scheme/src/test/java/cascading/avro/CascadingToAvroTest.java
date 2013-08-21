@@ -251,4 +251,32 @@ public class CascadingToAvroTest {
         assertThat(outSchema, is(expected));
     }
 
+    @Test
+    public void testToAvroFixedUsesValidRangeOfBytesWritable() {
+        Schema fieldSchema = schema.getField("aFixed").schema();
+        BytesWritable bytes = new BytesWritable();
+        byte[] old_buffer_value = { 0, 1, 2, 3 };
+        bytes.set(old_buffer_value, 0, old_buffer_value.length);
+
+        byte[] buffer_value = { 4, 5, 6 };
+        bytes.set(buffer_value, 0, buffer_value.length);
+        byte[] outBytes = ((Fixed) CascadingToAvro.toAvroFixed(bytes, fieldSchema)).bytes();
+
+        assertThat(outBytes, is(buffer_value));
+    }
+
+    @Test
+    public void testToAvroBytesUsesValidRangeOfBytesWritable() {
+        Schema fieldSchema = schema.getField("aBytes").schema();
+        BytesWritable bytes = (BytesWritable) tupleEntry.getObject("aBytes");
+        byte[] old_buffer_value = { 0, 1, 2, 3 };
+        bytes.set(old_buffer_value, 0, old_buffer_value.length);
+
+        byte[] buffer_value = { 4, 5, 6 };
+        ByteBuffer result = ByteBuffer.wrap(buffer_value);
+        bytes.set(buffer_value, 0, buffer_value.length);
+        ByteBuffer outBytes = (ByteBuffer) CascadingToAvro.toAvro(bytes, fieldSchema);
+
+        assertThat(outBytes, is(result));
+    }
 }

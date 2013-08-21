@@ -16,6 +16,7 @@ package cascading.avro;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -139,7 +140,7 @@ public class CascadingToAvro {
 
     protected static Object toAvroFixed(Object obj, Schema schema) {
         BytesWritable bytes = (BytesWritable) obj;
-        Fixed fixed = new Fixed(schema, bytes.getBytes());
+        Fixed fixed = new Fixed(schema, Arrays.copyOfRange(bytes.getBytes(), 0, bytes.getLength()));
         return fixed;
     }
 
@@ -177,7 +178,7 @@ public class CascadingToAvro {
 
     protected static Object toAvroBytes(Object obj) {
         BytesWritable inBytes = (BytesWritable) obj;
-        ByteBuffer buffer = ByteBuffer.wrap(inBytes.getBytes());
+        ByteBuffer buffer = ByteBuffer.wrap(Arrays.copyOfRange(inBytes.getBytes(), 0, inBytes.getLength()));
         return buffer;
     }
 
