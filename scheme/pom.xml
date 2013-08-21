@@ -129,6 +129,35 @@
             <artifactId>cascading-xml</artifactId>
             <version>${cascading.version}</version>
         </dependency>
+        <!-- trevni -->
+        <dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>trevni-avro</artifactId>
+			<version>${avro.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>hadoop-core</artifactId>
+					<groupId>org.apache.hadoop</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>trevni-core</artifactId>
+			<version>${avro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+			<scope>test</scope>
+		</dependency>
         <!-- test -->
         <dependency>
             <groupId>junit</groupId>

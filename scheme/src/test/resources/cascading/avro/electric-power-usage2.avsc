@@ -1,0 +1,15 @@
+{"type": "record", 
+ "name": "ElectricPowerUsage",
+ "namespace": "cascading.avro.trevni.specified",
+ "fields": [ 
+ 	{"name": "addressCode", "type": "string"},
+ 	{"name": "devicePowerEventList", "type": {"type": "array", "items": {"type": "record",
+ 	 													  "name": "DevicePowerEvent",
+ 	 													  "fields": [
+ 	 													  		{"name": "power", "type": "double"}
+ 	 													  ]
+ 	 													 }
+ 	 		                  }
+ 	}	 	 									
+ ]
+}
