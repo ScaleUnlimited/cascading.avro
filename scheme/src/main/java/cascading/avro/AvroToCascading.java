@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.avro.UnresolvedUnionException;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
@@ -124,21 +125,10 @@ public class AvroToCascading {
         return array;
     }
 
-    protected static Object fromAvroUnion(Object obj, Schema schema) {
-        List<Schema> types = schema.getTypes();
-        if (types.size() < 1) {
-            throw new AvroRuntimeException("Union has no types");
-        }
-        if (types.size() == 1) {
-            return fromAvro(obj, types.get(0));
-        } else if (types.size() > 2) {
-            throw new AvroRuntimeException("Unions may only consist of a concrete type and null in cascading.avro");
-        } else if (!types.get(0).getType().equals(Type.NULL) && !types.get(1).getType().equals(Type.NULL)) {
-            throw new AvroRuntimeException("Unions may only consist of a concrete type and null in cascading.avro");
-        } else {
-            Integer concreteIndex = (types.get(0).getType() == Type.NULL) ? 1 : 0;
-            return fromAvro(obj, types.get(concreteIndex));
-        }
-    }
+   protected static Object fromAvroUnion(Object obj, Schema schema) throws UnresolvedUnionException {
+		List<Schema> types = schema.getTypes();
+		int i = GenericData.get().resolveUnion(schema, obj);
+		return fromAvro(obj, types.get(i));
+	}
 
 }
