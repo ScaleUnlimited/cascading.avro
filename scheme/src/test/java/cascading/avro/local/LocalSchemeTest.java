@@ -1,6 +1,5 @@
 package cascading.avro.local;
 
-import cascading.avro.TestEnum;
 import cascading.flow.Flow;
 import cascading.flow.FlowDef;
 import cascading.flow.local.LocalFlowConnector;
@@ -34,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static cascading.avro.conversion.TypeMappings.asMap;
 
 
 public class LocalSchemeTest extends Assert {
@@ -99,10 +100,9 @@ public class LocalSchemeTest extends Assert {
         assertEquals(bytesWritable2, readEntry1.getObject(5));
         assertEquals(bytesWritable, readEntry1.getObject(6));
         assertEquals("test-string", readEntry1.getString(8));
-        assertEquals("0", ((List) readEntry1.getObject(9)).get(0)
+        assertEquals("0", ((Tuple) readEntry1.getObject(9)).get(0)
                 .toString());
-        assertEquals(1,
-                ((Map) readEntry1.getObject(10)).get("one"));
+        assertEquals(1, asMap(readEntry1.getObject(10)).get("one"));
         assertTrue(iterator.hasNext());
         final TupleEntry readEntry2 = iterator.next();
 
@@ -117,7 +117,7 @@ public class LocalSchemeTest extends Assert {
         String finalPath = tempDir.getRoot().toString() + "/testGrouped/final";
 
         // Get the schema from a file
-        Schema schema = new Schema.Parser().parse(getClass().getResourceAsStream("../test6.avsc"));
+        Schema schema = new Schema.Parser().parse(getClass().getResourceAsStream("../wordcount.avsc"));
 
         LocalFlowConnector flowConnector = new LocalFlowConnector();
 
@@ -220,20 +220,5 @@ public class LocalSchemeTest extends Assert {
         assertEquals(((IndexedRecord) record.get(0)).get(0), ((IndexedRecord) ((IndexedRecord) readEntry1.getObject(0)).get(0)).get(0));
         assertEquals(new Utf8((String) ((IndexedRecord) record.get(0)).get(1)), ((IndexedRecord) ((IndexedRecord) readEntry1.getObject(0)).get(0)).get(1));
         assertEquals(new Utf8((String) record.get(1)), ((IndexedRecord) readEntry1.getObject(0)).get(1));
-
     }
-
-    @Test
-    public void testSchemeWithFieldsAndTypes() throws Exception {
-      AvroScheme avroScheme = new AvroScheme(new Fields("a"), new Class[]{TestEnum.class});
-      String jsonSchema = avroScheme.getJsonSchema();
-      String enumField = String.format("{\"type\":\"enum\",\"name\":\"%s\",\"namespace\":\"%s\",\"symbols\":[\"ONE\",\"TWO\"]}",
-                                       "TestEnum", TestEnum.class.getPackage().getName());
-
-      String expected = String.format("{\"type\":\"record\",\"name\":\"CascadingAvroRecord\",\"doc\":\"auto generated\",\"fields\":[{\"name\":\"a\",\"type\":[\"null\",%s],\"doc\":\"\"}]}",
-                                      enumField);
-      assertEquals(expected, jsonSchema);
-    }
-
-
 }

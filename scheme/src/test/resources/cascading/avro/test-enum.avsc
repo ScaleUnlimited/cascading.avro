@@ -1,0 +1,9 @@
+{
+  "type": "enum",
+  "namespace": "cascading.avro.generated",
+  "name": "TestEnum",
+  "symbols": [
+    "ONE",
+    "TWO"
+  ]
+}

@@ -3,24 +3,26 @@
  * 
  * DO NOT EDIT DIRECTLY
  */
-package cascading.avro;  
+package cascading.avro.generated;  
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
-public class wordcount extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"wordcount\",\"namespace\":\"cascading.avro\",\"fields\":[{\"name\":\"token\",\"type\":\"string\"},{\"name\":\"count\",\"type\":\"long\"}]}");
+public class Wordcount extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Wordcount\",\"namespace\":\"cascading.avro.generated\",\"fields\":[{\"name\":\"token\",\"type\":\"string\"},{\"name\":\"count\",\"type\":\"long\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence token;
   @Deprecated public long count;
 
   /**
-   * Default constructor.
+   * Default constructor.  Note that this does not initialize fields
+   * to their default values from the schema.  If that is desired then
+   * one should use <code>newBuilder()</code>. 
    */
-  public wordcount() {}
+  public Wordcount() {}
 
   /**
    * All-args constructor.
    */
-  public wordcount(java.lang.CharSequence token, java.lang.Long count) {
+  public Wordcount(java.lang.CharSequence token, java.lang.Long count) {
     this.token = token;
     this.count = count;
   }
@@ -74,43 +76,51 @@ public class wordcount extends org.apache.avro.specific.SpecificRecordBase imple
     this.count = value;
   }
 
-  /** Creates a new wordcount RecordBuilder */
-  public static cascading.avro.wordcount.Builder newBuilder() {
-    return new cascading.avro.wordcount.Builder();
+  /** Creates a new Wordcount RecordBuilder */
+  public static cascading.avro.generated.Wordcount.Builder newBuilder() {
+    return new cascading.avro.generated.Wordcount.Builder();
   }
   
-  /** Creates a new wordcount RecordBuilder by copying an existing Builder */
-  public static cascading.avro.wordcount.Builder newBuilder(cascading.avro.wordcount.Builder other) {
-    return new cascading.avro.wordcount.Builder(other);
+  /** Creates a new Wordcount RecordBuilder by copying an existing Builder */
+  public static cascading.avro.generated.Wordcount.Builder newBuilder(cascading.avro.generated.Wordcount.Builder other) {
+    return new cascading.avro.generated.Wordcount.Builder(other);
   }
   
-  /** Creates a new wordcount RecordBuilder by copying an existing wordcount instance */
-  public static cascading.avro.wordcount.Builder newBuilder(cascading.avro.wordcount other) {
-    return new cascading.avro.wordcount.Builder(other);
+  /** Creates a new Wordcount RecordBuilder by copying an existing Wordcount instance */
+  public static cascading.avro.generated.Wordcount.Builder newBuilder(cascading.avro.generated.Wordcount other) {
+    return new cascading.avro.generated.Wordcount.Builder(other);
   }
   
   /**
-   * RecordBuilder for wordcount instances.
+   * RecordBuilder for Wordcount instances.
    */
-  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<wordcount>
-    implements org.apache.avro.data.RecordBuilder<wordcount> {
+  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Wordcount>
+    implements org.apache.avro.data.RecordBuilder<Wordcount> {
 
     private java.lang.CharSequence token;
     private long count;
 
     /** Creates a new Builder */
     private Builder() {
-      super(cascading.avro.wordcount.SCHEMA$);
+      super(cascading.avro.generated.Wordcount.SCHEMA$);
     }
     
     /** Creates a Builder by copying an existing Builder */
-    private Builder(cascading.avro.wordcount.Builder other) {
+    private Builder(cascading.avro.generated.Wordcount.Builder other) {
       super(other);
+      if (isValidValue(fields()[0], other.token)) {
+        this.token = data().deepCopy(fields()[0].schema(), other.token);
+        fieldSetFlags()[0] = true;
+      }
+      if (isValidValue(fields()[1], other.count)) {
+        this.count = data().deepCopy(fields()[1].schema(), other.count);
+        fieldSetFlags()[1] = true;
+      }
     }
     
-    /** Creates a Builder by copying an existing wordcount instance */
-    private Builder(cascading.avro.wordcount other) {
-            super(cascading.avro.wordcount.SCHEMA$);
+    /** Creates a Builder by copying an existing Wordcount instance */
+    private Builder(cascading.avro.generated.Wordcount other) {
+            super(cascading.avro.generated.Wordcount.SCHEMA$);
       if (isValidValue(fields()[0], other.token)) {
         this.token = data().deepCopy(fields()[0].schema(), other.token);
         fieldSetFlags()[0] = true;
@@ -127,7 +137,7 @@ public class wordcount extends org.apache.avro.specific.SpecificRecordBase imple
     }
     
     /** Sets the value of the 'token' field */
-    public cascading.avro.wordcount.Builder setToken(java.lang.CharSequence value) {
+    public cascading.avro.generated.Wordcount.Builder setToken(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.token = value;
       fieldSetFlags()[0] = true;
@@ -140,7 +150,7 @@ public class wordcount extends org.apache.avro.specific.SpecificRecordBase imple
     }
     
     /** Clears the value of the 'token' field */
-    public cascading.avro.wordcount.Builder clearToken() {
+    public cascading.avro.generated.Wordcount.Builder clearToken() {
       token = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -152,7 +162,7 @@ public class wordcount extends org.apache.avro.specific.SpecificRecordBase imple
     }
     
     /** Sets the value of the 'count' field */
-    public cascading.avro.wordcount.Builder setCount(long value) {
+    public cascading.avro.generated.Wordcount.Builder setCount(long value) {
       validate(fields()[1], value);
       this.count = value;
       fieldSetFlags()[1] = true;
@@ -165,15 +175,15 @@ public class wordcount extends org.apache.avro.specific.SpecificRecordBase imple
     }
     
     /** Clears the value of the 'count' field */
-    public cascading.avro.wordcount.Builder clearCount() {
+    public cascading.avro.generated.Wordcount.Builder clearCount() {
       fieldSetFlags()[1] = false;
       return this;
     }
 
     @Override
-    public wordcount build() {
+    public Wordcount build() {
       try {
-        wordcount record = new wordcount();
+        Wordcount record = new Wordcount();
         record.token = fieldSetFlags()[0] ? this.token : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.count = fieldSetFlags()[1] ? this.count : (java.lang.Long) defaultValue(fields()[1]);
         return record;

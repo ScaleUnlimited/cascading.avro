@@ -1,17 +1,13 @@
 package cascading.avro;
 
-import java.util.Collection;
-
 import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroJob;
-import org.apache.avro.mapred.AvroSerialization;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.trevni.avro.AvroTrevniInputFormat;
 import org.apache.trevni.avro.AvroTrevniOutputFormat;
 
-import cascading.avro.serialization.AvroSpecificRecordSerialization;
 import cascading.flow.FlowProcess;
 import cascading.tap.Tap;
 
@@ -51,19 +47,4 @@ public class TrevniScheme extends AvroScheme {
 		// add AvroSerialization to io.serializations
 		addAvroSerializations(conf);
 	}
-
-	
-
-	private void addAvroSerializations(JobConf conf) {
-		Collection<String> serializations = conf
-				.getStringCollection("io.serializations");
-		if (!serializations.contains(AvroSerialization.class.getName())) {
-			serializations.add(AvroSerialization.class.getName());
-			serializations.add(AvroSpecificRecordSerialization.class.getName());
-		}
-
-		conf.setStrings("io.serializations",
-				serializations.toArray(new String[serializations.size()]));
-	}
-
 }

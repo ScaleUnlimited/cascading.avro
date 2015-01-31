@@ -3,24 +3,26 @@
  * 
  * DO NOT EDIT DIRECTLY
  */
-package cascading.avro;  
+package cascading.avro.generated;  
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
-public class test2 extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"test2\",\"namespace\":\"cascading.avro\",\"fields\":[{\"name\":\"innerRec\",\"type\":{\"type\":\"record\",\"name\":\"nested\",\"fields\":[{\"name\":\"anInnerField1\",\"type\":\"int\"},{\"name\":\"anInnerField2\",\"type\":\"string\"}]}},{\"name\":\"outerField\",\"type\":\"string\"}]}");
+public class Test2 extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Test2\",\"namespace\":\"cascading.avro.generated\",\"fields\":[{\"name\":\"innerRec\",\"type\":{\"type\":\"record\",\"name\":\"nested\",\"fields\":[{\"name\":\"anInnerField1\",\"type\":\"int\"},{\"name\":\"anInnerField2\",\"type\":\"string\"}]}},{\"name\":\"outerField\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public cascading.avro.nested innerRec;
+  @Deprecated public cascading.avro.generated.nested innerRec;
   @Deprecated public java.lang.CharSequence outerField;
 
   /**
-   * Default constructor.
+   * Default constructor.  Note that this does not initialize fields
+   * to their default values from the schema.  If that is desired then
+   * one should use <code>newBuilder()</code>. 
    */
-  public test2() {}
+  public Test2() {}
 
   /**
    * All-args constructor.
    */
-  public test2(cascading.avro.nested innerRec, java.lang.CharSequence outerField) {
+  public Test2(cascading.avro.generated.nested innerRec, java.lang.CharSequence outerField) {
     this.innerRec = innerRec;
     this.outerField = outerField;
   }
@@ -38,7 +40,7 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: innerRec = (cascading.avro.nested)value$; break;
+    case 0: innerRec = (cascading.avro.generated.nested)value$; break;
     case 1: outerField = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
@@ -47,7 +49,7 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
   /**
    * Gets the value of the 'innerRec' field.
    */
-  public cascading.avro.nested getInnerRec() {
+  public cascading.avro.generated.nested getInnerRec() {
     return innerRec;
   }
 
@@ -55,7 +57,7 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
    * Sets the value of the 'innerRec' field.
    * @param value the value to set.
    */
-  public void setInnerRec(cascading.avro.nested value) {
+  public void setInnerRec(cascading.avro.generated.nested value) {
     this.innerRec = value;
   }
 
@@ -74,43 +76,51 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
     this.outerField = value;
   }
 
-  /** Creates a new test2 RecordBuilder */
-  public static cascading.avro.test2.Builder newBuilder() {
-    return new cascading.avro.test2.Builder();
+  /** Creates a new Test2 RecordBuilder */
+  public static cascading.avro.generated.Test2.Builder newBuilder() {
+    return new cascading.avro.generated.Test2.Builder();
   }
   
-  /** Creates a new test2 RecordBuilder by copying an existing Builder */
-  public static cascading.avro.test2.Builder newBuilder(cascading.avro.test2.Builder other) {
-    return new cascading.avro.test2.Builder(other);
+  /** Creates a new Test2 RecordBuilder by copying an existing Builder */
+  public static cascading.avro.generated.Test2.Builder newBuilder(cascading.avro.generated.Test2.Builder other) {
+    return new cascading.avro.generated.Test2.Builder(other);
   }
   
-  /** Creates a new test2 RecordBuilder by copying an existing test2 instance */
-  public static cascading.avro.test2.Builder newBuilder(cascading.avro.test2 other) {
-    return new cascading.avro.test2.Builder(other);
+  /** Creates a new Test2 RecordBuilder by copying an existing Test2 instance */
+  public static cascading.avro.generated.Test2.Builder newBuilder(cascading.avro.generated.Test2 other) {
+    return new cascading.avro.generated.Test2.Builder(other);
   }
   
   /**
-   * RecordBuilder for test2 instances.
+   * RecordBuilder for Test2 instances.
    */
-  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<test2>
-    implements org.apache.avro.data.RecordBuilder<test2> {
+  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Test2>
+    implements org.apache.avro.data.RecordBuilder<Test2> {
 
-    private cascading.avro.nested innerRec;
+    private cascading.avro.generated.nested innerRec;
     private java.lang.CharSequence outerField;
 
     /** Creates a new Builder */
     private Builder() {
-      super(cascading.avro.test2.SCHEMA$);
+      super(cascading.avro.generated.Test2.SCHEMA$);
     }
     
     /** Creates a Builder by copying an existing Builder */
-    private Builder(cascading.avro.test2.Builder other) {
+    private Builder(cascading.avro.generated.Test2.Builder other) {
       super(other);
+      if (isValidValue(fields()[0], other.innerRec)) {
+        this.innerRec = data().deepCopy(fields()[0].schema(), other.innerRec);
+        fieldSetFlags()[0] = true;
+      }
+      if (isValidValue(fields()[1], other.outerField)) {
+        this.outerField = data().deepCopy(fields()[1].schema(), other.outerField);
+        fieldSetFlags()[1] = true;
+      }
     }
     
-    /** Creates a Builder by copying an existing test2 instance */
-    private Builder(cascading.avro.test2 other) {
-            super(cascading.avro.test2.SCHEMA$);
+    /** Creates a Builder by copying an existing Test2 instance */
+    private Builder(cascading.avro.generated.Test2 other) {
+            super(cascading.avro.generated.Test2.SCHEMA$);
       if (isValidValue(fields()[0], other.innerRec)) {
         this.innerRec = data().deepCopy(fields()[0].schema(), other.innerRec);
         fieldSetFlags()[0] = true;
@@ -122,12 +132,12 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
     }
 
     /** Gets the value of the 'innerRec' field */
-    public cascading.avro.nested getInnerRec() {
+    public cascading.avro.generated.nested getInnerRec() {
       return innerRec;
     }
     
     /** Sets the value of the 'innerRec' field */
-    public cascading.avro.test2.Builder setInnerRec(cascading.avro.nested value) {
+    public cascading.avro.generated.Test2.Builder setInnerRec(cascading.avro.generated.nested value) {
       validate(fields()[0], value);
       this.innerRec = value;
       fieldSetFlags()[0] = true;
@@ -140,7 +150,7 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
     }
     
     /** Clears the value of the 'innerRec' field */
-    public cascading.avro.test2.Builder clearInnerRec() {
+    public cascading.avro.generated.Test2.Builder clearInnerRec() {
       innerRec = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -152,7 +162,7 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
     }
     
     /** Sets the value of the 'outerField' field */
-    public cascading.avro.test2.Builder setOuterField(java.lang.CharSequence value) {
+    public cascading.avro.generated.Test2.Builder setOuterField(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.outerField = value;
       fieldSetFlags()[1] = true;
@@ -165,17 +175,17 @@ public class test2 extends org.apache.avro.specific.SpecificRecordBase implement
     }
     
     /** Clears the value of the 'outerField' field */
-    public cascading.avro.test2.Builder clearOuterField() {
+    public cascading.avro.generated.Test2.Builder clearOuterField() {
       outerField = null;
       fieldSetFlags()[1] = false;
       return this;
     }
 
     @Override
-    public test2 build() {
+    public Test2 build() {
       try {
-        test2 record = new test2();
-        record.innerRec = fieldSetFlags()[0] ? this.innerRec : (cascading.avro.nested) defaultValue(fields()[0]);
+        Test2 record = new Test2();
+        record.innerRec = fieldSetFlags()[0] ? this.innerRec : (cascading.avro.generated.nested) defaultValue(fields()[0]);
         record.outerField = fieldSetFlags()[1] ? this.outerField : (java.lang.CharSequence) defaultValue(fields()[1]);
         return record;
       } catch (Exception e) {

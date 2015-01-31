@@ -54,7 +54,8 @@ public class PackedAvroScheme<T> extends AvroScheme {
         DatumReader<T> datumReader = new SpecificDatumReader<T>(schema);
         try {
             return new DataFileStream<T>(inputStream, datumReader);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -73,7 +74,8 @@ public class PackedAvroScheme<T> extends AvroScheme {
         try {
             dataWriter.create(schema, outputStream);
             return dataWriter;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.error("Unable to create the DataFileWriter output.");
             e.printStackTrace();
             System.exit(1);
@@ -94,8 +96,6 @@ public class PackedAvroScheme<T> extends AvroScheme {
             throw new RuntimeException("Cannot have a null schema for the sink (yet).");
 
         sinkCall.setContext(createOutput(sinkCall.getOutput()));
-
-
     }
 
     /**
@@ -109,7 +109,7 @@ public class PackedAvroScheme<T> extends AvroScheme {
     public void sink(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) throws IOException {
         TupleEntry tupleEntry = sinkCall.getOutgoingEntry();
         //noinspection unchecked
-        sinkCall.getContext().append((T) tupleEntry.getObject(Fields.FIRST));
+        sinkCall.getContext().append(tupleEntry.getObject(Fields.FIRST));
     }
 
 
@@ -124,7 +124,8 @@ public class PackedAvroScheme<T> extends AvroScheme {
     public Fields retrieveSourceFields(FlowProcess<Properties> flowProcess, Tap tap) {
         if (schema == null) {
             setSourceFields(Fields.UNKNOWN);
-        } else {
+        }
+        else {
             setSourceFields(new Fields(schema.getName()));
         }
         return getSourceFields();
@@ -141,10 +142,9 @@ public class PackedAvroScheme<T> extends AvroScheme {
     @Override
     public boolean source(FlowProcess<Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) {
         if (sourceCall.getContext().hasNext()) {
-            T record = (T) sourceCall.getContext().next();
             Tuple tuple = sourceCall.getIncomingEntry().getTuple();
             tuple.clear();
-            tuple.add(record);
+            tuple.add(sourceCall.getContext().next());
             return true;
         }
         return false;
