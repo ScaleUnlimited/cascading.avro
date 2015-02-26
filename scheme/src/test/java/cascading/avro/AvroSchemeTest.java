@@ -713,4 +713,22 @@ public class AvroSchemeTest extends Assert {
     wcFlow2.complete();
 
   }
+
+  @Test
+  public void testSerializeExtraLargeSchema() throws Exception {
+    final Schema extraLarge = new Schema.Parser().parse(getClass().getResourceAsStream(
+            "test-extra-large.avsc"));
+    final AvroScheme expected = new AvroScheme(extraLarge);
+
+    final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    ObjectOutputStream oos = new ObjectOutputStream(bytes);
+    oos.writeObject(expected);
+    oos.close();
+
+    final ObjectInputStream iis = new ObjectInputStream(
+            new ByteArrayInputStream(bytes.toByteArray()));
+    final AvroScheme actual = (AvroScheme) iis.readObject();
+
+    assertEquals(expected, actual);
+  }
 }

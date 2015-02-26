@@ -114,7 +114,11 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     protected static Schema readSchema(java.io.ObjectInputStream in) throws IOException {
         final Schema.Parser parser = new Schema.Parser();
-        return parser.parse(in.readUTF());
+        try {
+            return parser.parse(in.readObject().toString());
+        } catch (ClassNotFoundException cce) {
+            throw new RuntimeException("Unable to read schema which is expected to be written as a java string", cce);
+        }
     }
 
     /**
@@ -321,14 +325,12 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
                     stream = new BufferedInputStream(fs.open(statusPath));
                     reader = new DataFileStream(stream, new GenericDatumReader());
                     return reader.getSchema();
-                }
-                finally {
+                } finally {
                     if (reader == null) {
                         if (stream != null) {
                             stream.close();
                         }
-                    }
-                    else {
+                    } else {
                         reader.close();
                     }
                 }
@@ -352,7 +354,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
 
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException {
-        out.writeUTF(this.schema.toString());
+        out.writeObject(this.schema.toString());
     }
 
     private void readObject(java.io.ObjectInputStream in)
