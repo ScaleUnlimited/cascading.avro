@@ -17,6 +17,7 @@ import cascading.tap.Tap;
 import cascading.tap.local.FileTap;
 import cascading.tuple.*;
 import junit.framework.Assert;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static cascading.avro.conversion.TypeMappings.asMap;
 
 
 public class LocalSchemeTest extends Assert {
@@ -97,10 +100,9 @@ public class LocalSchemeTest extends Assert {
         assertEquals(bytesWritable2, readEntry1.getObject(5));
         assertEquals(bytesWritable, readEntry1.getObject(6));
         assertEquals("test-string", readEntry1.getString(8));
-        assertEquals("0", ((List) readEntry1.getObject(9)).get(0)
+        assertEquals("0", ((Tuple) readEntry1.getObject(9)).get(0)
                 .toString());
-        assertEquals(1,
-                ((Map) readEntry1.getObject(10)).get("one"));
+        assertEquals(1, asMap(readEntry1.getObject(10)).get("one"));
         assertTrue(iterator.hasNext());
         final TupleEntry readEntry2 = iterator.next();
 
@@ -115,7 +117,7 @@ public class LocalSchemeTest extends Assert {
         String finalPath = tempDir.getRoot().toString() + "/testGrouped/final";
 
         // Get the schema from a file
-        Schema schema = new Schema.Parser().parse(getClass().getResourceAsStream("../test6.avsc"));
+        Schema schema = new Schema.Parser().parse(getClass().getResourceAsStream("../wordcount.avsc"));
 
         LocalFlowConnector flowConnector = new LocalFlowConnector();
 
@@ -218,8 +220,5 @@ public class LocalSchemeTest extends Assert {
         assertEquals(((IndexedRecord) record.get(0)).get(0), ((IndexedRecord) ((IndexedRecord) readEntry1.getObject(0)).get(0)).get(0));
         assertEquals(new Utf8((String) ((IndexedRecord) record.get(0)).get(1)), ((IndexedRecord) ((IndexedRecord) readEntry1.getObject(0)).get(0)).get(1));
         assertEquals(new Utf8((String) record.get(1)), ((IndexedRecord) readEntry1.getObject(0)).get(1));
-
     }
-
-
 }

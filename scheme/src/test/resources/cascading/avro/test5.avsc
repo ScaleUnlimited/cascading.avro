@@ -1,7 +1,7 @@
 {
     "type": "record",
-    "name": "test1",
-    "namespace": "com.maxpoint.cascading.avro",
+    "name": "Test5",
+    "namespace": "cascading.avro.generated",
     "fields": [
         {"name": "aBoolean", "type": "boolean", "default": true },
         {"name": "anInt", "type": "int", "default": 123 },
@@ -10,9 +10,9 @@
         {"name": "aDouble", "type": "double", "default": 110.1 },
         {"name": "aString", "type": ["string", "null"], "default": "foobar" },
         {"name": "aBytes", "type": "bytes" },
-        {"name": "aFixed", "type": {"name": "md5", "type": "fixed", "size": 16 }},
+        {"name": "aFixed", "type": {"name": "md52", "type": "fixed", "size": 16 }},
         {"name": "aList", "type":{"type":"array", "items":"int"}},
         {"name": "aMap", "type":{"type":"map", "values":"int"}},
-        {"name": "aUnion", "type":["null", "int"]}
+        {"name": "aUnion", "type":["null", "int", "Test5", {"type": "array", "items": "int"}]}
     ]
 }

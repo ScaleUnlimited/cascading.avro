@@ -17,22 +17,22 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cascading.avro</groupId>
     <artifactId>avro-scheme</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Cascading support for Avro</name>
     <description>
         Cascading scheme for reading and writing Avro-serialized data.
     </description>
     <scm>
-        <connection>scm:git:git://github.com/bixolabs/cascading.avro.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:bixolabs/cascading.avro.git</developerConnection>
-        <url>https://github.com/bixolabs/cascading.avro</url>
+        <connection>scm:git:git://github.com/ScaleUnlimited/cascading.avro.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:ScaleUnlimited/cascading.avro.git</developerConnection>
+        <url>https://github.com/ScaleUnlimited/cascading.avro</url>
     </scm>
 
     <properties>
-        <hadoop.version>1.0.3</hadoop.version>
-        <cascading.version>2.1.6</cascading.version>
-        <avro.version>1.7.4</avro.version>
+        <hadoop.version>2.2.0</hadoop.version>
+        <cascading.version>2.6.3</cascading.version>
+        <avro.version>1.7.7</avro.version>
     </properties>
 
     <repositories>
@@ -59,6 +59,9 @@
                         <source>1.6</source>
                         <target>1.6</target>
                         <encoding>UTF-8</encoding>
+                        <testExcludes>
+                            <exclude>**/cascading/avro/TestExtraLarge.java</exclude>
+                        </testExcludes>
                     </configuration>
                 </plugin>
             </plugins>
@@ -103,6 +106,7 @@
             <groupId>org.apache.avro</groupId>
             <artifactId>avro-mapred</artifactId>
             <version>${avro.version}</version>
+  			<classifier>hadoop2</classifier> 
             <exclusions>
               <exclusion>
                 <groupId>org.apache.avro</groupId>
@@ -112,7 +116,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
+		<dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -136,12 +146,6 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>trevni-avro</artifactId>
 			<version>${avro.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>hadoop-core</artifactId>
-					<groupId>org.apache.hadoop</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.avro</groupId>

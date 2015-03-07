@@ -1,14 +1,14 @@
 {
   "type": "record",
-  "name": "test2",
-  "namespace": "cascading.avro",
+  "name": "Test2",
+  "namespace": "cascading.avro.generated",
   "fields": [
   { 
     "name": "innerRec",
     "type": {
       "type":"record",
       "name":"nested",
-      "namespace": "cascading.avro",
+      "namespace": "cascading.avro.generated",
       "fields": [
       {"name":"anInnerField1", "type":"int"},
       {"name":"anInnerField2", "type":"string"}

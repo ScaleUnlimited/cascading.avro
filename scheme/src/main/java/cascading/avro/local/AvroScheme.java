@@ -1,7 +1,9 @@
 package cascading.avro.local;
 
-import cascading.avro.AvroToCascading;
-import cascading.avro.CascadingToAvro;
+import cascading.avro.conversion.AvroConverter;
+import cascading.avro.conversion.AvroToCascading;
+import cascading.avro.conversion.CascadingToAvro;
+import cascading.avro.conversion.TypeMappings;
 import cascading.flow.FlowProcess;
 import cascading.scheme.Scheme;
 import cascading.scheme.SinkCall;
@@ -9,8 +11,8 @@ import cascading.scheme.SourceCall;
 import cascading.tap.CompositeTap;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
-import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
+import com.google.common.base.Function;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.DataFileStream;
@@ -37,51 +39,74 @@ import java.util.Properties;
  * A local version of the Cascading Scheme for Apache Avro.
  */
 public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, DataFileStream, DataFileWriter> {
-
     private static final Logger LOG = LoggerFactory.getLogger(AvroScheme.class);
-    private Encoder encoder;
-    //    private Decoder decoder;
+    protected final int recordUnpackDepth;
+    protected AvroConverter<IndexedRecord, TupleEntry> avroToCascading;
+    protected AvroConverter<TupleEntry, IndexedRecord> cascadingToAvro;
+    protected Encoder encoder;
     protected Schema schema;
-    private GenericDatumReader<IndexedRecord> datumReader;
-    private GenericDatumWriter<IndexedRecord> datumWriter;
+    protected GenericDatumReader<IndexedRecord> datumReader;
+    protected GenericDatumWriter<IndexedRecord> datumWriter;
 
     /**
-     * Constructor that takes an Avro Schema. It will create the incoming and outgoing fields from the Schema if it isn't
-     * null. If it is null assume the sink is Fields.ALL and the source is Fields.UNKNOWN. These will be set later.
-     *
-     * @param schema
+     * Constructor to read from an Avro source or write to an Avro sink without specifying the schema. If using as a sink,
+     * the sink Fields must have type information and currently Map and List are not supported.
      */
+    public AvroScheme() {
+        this(null, -1);
+    }
+
+    public AvroScheme(int recordUnpackDepth) {
+        this(null, recordUnpackDepth);
+    }
+
     public AvroScheme(Schema schema) {
-        this.schema = schema;
+        this(schema, -1);
+    }
+
+    /**
+     * Create a new Cascading 2.0 scheme suitable for reading and writing data using the Avro serialization format.
+     * Note that if schema is null, the Avro schema will be inferred from one of the source files (if this scheme
+     * is being used as a source). At the moment, we are unable to infer a schema for a sink (this will change soon with
+     * a new version of cascading though).
+     *
+     * @param schema            Avro schema, or null if this is to be inferred from source file. Note that a runtime exception will happen
+     *                          if the AvroScheme is used as a sink and no schema is supplied.
+     * @param recordUnpackDepth
+     */
+    public AvroScheme(Schema schema, int recordUnpackDepth) {
+        this.avroToCascading = new AvroToCascading();
+        this.cascadingToAvro = new CascadingToAvro();
+        this.recordUnpackDepth = recordUnpackDepth;
         if (schema == null) {
-            setSinkFields(Fields.ALL);
-            setSourceFields(Fields.UNKNOWN);
-        } else {
-            Fields cascadingFields = new Fields();
-            for (Schema.Field avroField : schema.getFields()) {
-                cascadingFields = cascadingFields.append(
-                        new Fields(avroField.name()));
-            }
-            setSinkFields(cascadingFields);
-            setSourceFields(cascadingFields);
+            this.setSinkFields(Fields.ALL);
+            this.setSourceFields(Fields.UNKNOWN);
+        }
+        else {
+            this.schema = schema;
+            Fields cascadingFields = this.getCascadingFields();
+            this.setSinkFields(cascadingFields);
+            this.setSourceFields(cascadingFields);
         }
     }
 
-    /**
-     * Pass through to the Schema constructor with a null schema.
-     */
-    public AvroScheme() {
-        this(null);
+    protected Fields getCascadingFields() {
+        List<Schema.Field> avroFields = this.schema.getFields();
+        Comparable[] fieldNames = new String[avroFields.size()];
+        for (int i = 0; i < avroFields.size(); i++) {
+            Schema.Field avroField = avroFields.get(i);
+            fieldNames[i] = avroField.name();
+        }
+        return new Fields(fieldNames);
     }
 
     DataFileStream<IndexedRecord> createInput(InputStream inputStream) {
-//        if (decoder == null)
-//            decoder = DecoderFactory.get().binaryDecoder(inputStream, null);
         if (datumReader == null)
             datumReader = new GenericDatumReader<IndexedRecord>(schema);
         try {
             return new DataFileStream<IndexedRecord>(inputStream, datumReader);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -101,7 +126,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
         try {
             dataWriter.create(schema, outputStream);
             return dataWriter;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.error("Unable to create the DataFileWriter output.");
             e.printStackTrace();
             System.exit(1);
@@ -132,7 +158,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
                 try {
                     @SuppressWarnings("unchecked") DataFileReader reader = new DataFileReader(f, new GenericDatumReader());
                     schema = reader.getSchema();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOG.info("Couldn't open " + f.toString(), e);
                 }
             }
@@ -143,10 +170,12 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
                             @SuppressWarnings("unchecked") DataFileReader reader = new DataFileReader(file, new GenericDatumReader());
                             schema = reader.getSchema();
                             break;
-                        } catch (IOException e) {
+                        }
+                        catch (IOException e) {
                             LOG.info("Couldn't open " + file.toString(), e);
                         }
-                    } else if (file.isDirectory()) secondaryFiles.addAll(Arrays.asList(file.listFiles()));
+                    }
+                    else if (file.isDirectory()) secondaryFiles.addAll(Arrays.asList(file.listFiles()));
                 }
             if (schema == null) {
                 for (File file : secondaryFiles) {
@@ -155,7 +184,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
                             @SuppressWarnings("unchecked") DataFileReader reader = new DataFileReader(file, new GenericDatumReader());
                             schema = reader.getSchema();
                             break;
-                        } catch (IOException e) {
+                        }
+                        catch (IOException e) {
                             LOG.info("Couldn't open " + file.toString(), e);
                         }
                     }
@@ -169,7 +199,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
         Fields cascadingFields = new Fields();
         if (schema.getType().equals(Schema.Type.NULL)) {
             cascadingFields = Fields.NONE;
-        } else {
+        }
+        else {
             for (Schema.Field avroField : schema.getFields())
                 cascadingFields = cascadingFields.append(new Fields(avroField.name()));
         }
@@ -246,12 +277,10 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
 
         if (sourceCall.getContext().hasNext()) {
             IndexedRecord record = (IndexedRecord) sourceCall.getContext().next();
-            Tuple tuple = sourceCall.getIncomingEntry().getTuple();
-            tuple.clear();
-            Object[] split = AvroToCascading.parseRecord(record, schema);
-            tuple.addAll(split);
+            this.avroToCascading.convertRecord(sourceCall.getIncomingEntry(), record, schema, this.recordUnpackDepth);
             return true;
-        } else
+        }
+        else
             return false;
     }
 
@@ -287,12 +316,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      */
     @Override
     public void sinkPrepare(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) {
-        if (schema == null)
-            throw new RuntimeException("Cannot have a null schema for the sink (yet).");
-
+        if (schema == null) throw new RuntimeException("Cannot have a null schema for the sink (yet).");
         sinkCall.setContext(createOutput(sinkCall.getOutput()));
-
-
     }
 
     /**
@@ -310,15 +335,19 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
     public void sink(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) throws IOException {
         TupleEntry tupleEntry = sinkCall.getOutgoingEntry();
 
-        IndexedRecord record = new GenericData.Record(schema);
-        Object[] objectArray = CascadingToAvro.parseTupleEntry(tupleEntry, schema);
-        for (int i = 0; i < objectArray.length; i++) {
-            record.put(i, objectArray[i]);
-        }
+        IndexedRecord record = this.cascadingToAvro.convertRecord(tupleEntry, schema, this.recordUnpackDepth);
 
+        //noinspection unchecked
         sinkCall.getContext().append(record);
+    }
 
-
+    protected Function<Schema, IndexedRecord> avroRecordBuilder() {
+        return new Function<Schema, IndexedRecord>() {
+            @Override
+            public IndexedRecord apply(Schema schema) {
+                return new GenericData.Record(schema);
+            }
+        };
     }
 
     /**
@@ -333,7 +362,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
         try {
             sinkCall.getContext().flush();
             sinkCall.getContext().close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.error("Unable to flush and close the output sink.");
             e.printStackTrace();
             System.exit(1);
@@ -356,15 +386,15 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
     @Override
     public String toString() {
         return "AvroScheme{" +
-                "schema=" + schema +
-                '}';
+            "schema=" + schema +
+            '}';
     }
 
     @Override
     public int hashCode() {
 
         return 31 * getSinkFields().hashCode() +
-                schema.hashCode();
+            schema.hashCode();
     }
 }
 

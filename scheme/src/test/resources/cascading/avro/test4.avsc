@@ -1,7 +1,7 @@
 {
     "type": "record",
-    "name": "test4",
-    "namespace": "com.maxpoint.cascading.avro",
+    "name": "Test4",
+    "namespace": "cascading.avro.generated",
     "fields": [
         {"name":"aListOfListOfInt", "type":{"type":"array", "items":{"type":"array", "items":"int"}}},
         {"name":"aListOfMapToLong", "type":{"type":"array", "items":{"type":"map", "values":"long"}}}

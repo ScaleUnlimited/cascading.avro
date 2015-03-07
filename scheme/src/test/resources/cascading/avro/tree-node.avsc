@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "namespace": "cascading.avro.generated",
+  "name": "TreeNode",
+  "fields": [
+    {
+      "name": "label",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "count",
+      "type": "int"
+    },
+    {
+      "name": "children",
+      "type": {"type": "array", "items": "TreeNode"}
+    }
+  ]
+}

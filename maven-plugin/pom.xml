@@ -21,7 +21,7 @@
 
   <groupId>cascading.avro</groupId>
   <artifactId>avro-maven-plugin</artifactId>
-  <version>2.2-SNAPSHOT</version>
+  <version>2.6-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Cascading field name generator for Avro</name>
@@ -30,13 +30,13 @@
   </description>
 
   <scm>
-    <connection>scm:git:git://github.com/bixolabs/cascading.avro.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:bixolabs/cascading.avro.git</developerConnection>
-    <url>https://github.com/bixolabs/cascading.avro</url>
+    <connection>scm:git:git://github.com/ScaleUnlimited/cascading.avro.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:ScaleUnlimited/cascading.avro.git</developerConnection>
+    <url>https://github.com/ScaleUnlimited/cascading.avro</url>
   </scm>
 
   <properties>
-	<avro.version>1.7.2</avro.version>
+	<avro.version>1.7.7</avro.version>
   </properties>
 
   <build>

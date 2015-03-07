@@ -118,13 +118,14 @@ public class TrevniSchemeTest extends Assert {
 		final TupleEntry readEntry1 = iterator.next();
 		
 		assertTrue(readEntry1.getString("addressCode").equals("4874025000-514"));
-		assertEquals(2, ((List)readEntry1.getObject("devicePowerEventList")).size());
-		assertEquals(1300.0, ((Tuple)((List)readEntry1.getObject("devicePowerEventList")).get(0)).getDouble(0));
+		Tuple devicePowerEventList1 = (Tuple) readEntry1.getObject("devicePowerEventList");
+		assertEquals(2, devicePowerEventList1.size());
+		assertEquals(1300.0, ((TupleEntry) devicePowerEventList1.getObject(0)).getDouble(0));
 		
 		final TupleEntry readEntry2 = iterator.next();
 		
 		assertTrue(readEntry2.getString("addressCode").equals("4725033000-4031"));
-		assertEquals(3, ((List)readEntry2.getObject("devicePowerEventList")).size());
-		assertEquals(110.4, ((Tuple)((List)readEntry1.getObject("devicePowerEventList")).get(1)).getDouble(0));
+		assertEquals(3, ((Tuple)readEntry2.getObject("devicePowerEventList")).size());
+		assertEquals(110.4, ((TupleEntry) ((Tuple) readEntry1.getObject("devicePowerEventList")).getObject(1)).getDouble(0));
 	}
 }
