@@ -104,7 +104,7 @@ public class LocalSchemeTest extends Assert {
         assertTrue(iterator.hasNext());
         final TupleEntry readEntry2 = iterator.next();
 
-        assertNull(readEntry2.get("aUnion"));
+        assertNull(readEntry2.getObject("aUnion"));
     }
 
     @Test

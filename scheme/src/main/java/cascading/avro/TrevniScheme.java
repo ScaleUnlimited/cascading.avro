@@ -23,7 +23,7 @@ public class TrevniScheme extends AvroScheme {
 	}
 	
 	@Override
-	public void sourceConfInit(FlowProcess<JobConf> flowProcess,
+	public void sourceConfInit(FlowProcess<? extends JobConf> flowProcess,
 			Tap<JobConf, RecordReader, OutputCollector> tap, JobConf conf) {
 
 		retrieveSourceFields(flowProcess, tap);
@@ -37,7 +37,7 @@ public class TrevniScheme extends AvroScheme {
 	}
 
 	@Override
-	public void sinkConfInit(FlowProcess<JobConf> flowProcess,
+	public void sinkConfInit(FlowProcess<? extends JobConf> flowProcess,
 			Tap<JobConf, RecordReader, OutputCollector> tap, JobConf conf) {
 
 		if (schema == null) {

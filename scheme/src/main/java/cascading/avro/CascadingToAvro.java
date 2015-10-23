@@ -162,7 +162,7 @@ public class CascadingToAvro {
                         throw new AvroRuntimeException(String.format("Found map value with %s instead of expected %s",
                                 tuple.getObject(i + 1).getClass(), mapValueType));
                     }
-                    convertedMap.put(tuple.get(i).toString(), toAvro(tuple.get(i + 1), schema.getValueType()));
+                    convertedMap.put(tuple.getObject(i).toString(), toAvro(tuple.getObject(i + 1), schema.getValueType()));
                 }
             } else {
                 throw new AvroRuntimeException("Can't convert from an odd length tuple to a map");

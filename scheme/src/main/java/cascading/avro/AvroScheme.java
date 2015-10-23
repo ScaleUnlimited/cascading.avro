@@ -70,7 +70,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
     }
 
     /**
-     * Create a new Cascading 2.0 scheme suitable for reading and writing data using the Avro serialization format.
+     * Create a new Cascading scheme suitable for reading and writing data using the Avro serialization format.
      * This is the legacy constructor format. A Fields object and the corresponding types must be provided.
      *
      * @param fields Fields object from cascading
@@ -81,7 +81,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
     }
 
     /**
-     * Create a new Cascading 2.0 scheme suitable for reading and writing data using the Avro serialization format.
+     * Create a new Cascading scheme suitable for reading and writing data using the Avro serialization format.
      * Note that if schema is null, the Avro schema will be inferred from one of the source files (if this scheme
      * is being used as a source). At the moment, we are unable to infer a schema for a sink (this will change soon with
      * a new version of cascading though).
@@ -143,7 +143,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sink(
-            FlowProcess<JobConf> flowProcess,
+            FlowProcess<? extends JobConf> flowProcess,
             SinkCall<Object[], OutputCollector> sinkCall)
             throws IOException {
         TupleEntry tupleEntry = sinkCall.getOutgoingEntry();
@@ -168,7 +168,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sinkPrepare(
-            FlowProcess<JobConf> flowProcess,
+            FlowProcess<? extends JobConf> flowProcess,
             SinkCall<Object[], OutputCollector> sinkCall)
             throws IOException {
         sinkCall.setContext(new Object[]{schema});
@@ -188,7 +188,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sinkConfInit(
-            FlowProcess<JobConf> flowProcess,
+            FlowProcess<? extends JobConf> flowProcess,
             Tap<JobConf, RecordReader, OutputCollector> tap,
             JobConf conf) {
 
@@ -213,7 +213,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      * @return Fields The source cascading fields.
      */
     @Override
-    public Fields retrieveSourceFields(FlowProcess<JobConf> flowProcess, Tap tap) {
+    public Fields retrieveSourceFields(FlowProcess<? extends JobConf> flowProcess, Tap tap) {
         if (schema == null) {
             try {
                 schema = getSourceSchema(flowProcess, tap);
@@ -242,7 +242,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public boolean source(
-            FlowProcess<JobConf> flowProcess,
+            FlowProcess<? extends JobConf> flowProcess,
             SourceCall<Object[], RecordReader> sourceCall)
             throws IOException {
 
@@ -274,7 +274,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      */
     @Override
     public void sourceConfInit(
-            FlowProcess<JobConf> flowProcess,
+            FlowProcess<? extends JobConf> flowProcess,
             Tap<JobConf, RecordReader, OutputCollector> tap,
             JobConf conf) {
 
@@ -294,7 +294,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
      * @param tap         The cascading Tap object.
      * @return Schema The schema of the peeked at data, or Schema.NULL if none exists.
      */
-    private Schema getSourceSchema(FlowProcess<JobConf> flowProcess, Tap tap) throws IOException {
+    private Schema getSourceSchema(FlowProcess<? extends JobConf> flowProcess, Tap tap) throws IOException {
 
         if (tap instanceof CompositeTap) {
             tap = (Tap) ((CompositeTap) tap).getChildTaps().next();
@@ -384,8 +384,7 @@ public class AvroScheme extends Scheme<JobConf, RecordReader, OutputCollector, O
 
     @Override
     public int hashCode() {
-
-        return 31 * getSinkFields().hashCode() +
+        return 31 * (getSinkFields() == null ? 0 : getSinkFields().hashCode()) +
                 (schema == null ? 0 : schema.hashCode());
     }
 }

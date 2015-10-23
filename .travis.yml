@@ -1,0 +1,19 @@
+# See this guide for more settings:
+#
+# http://about.travis-ci.org/docs/user/build-configuration/
+
+# See this guide for more settings:
+#
+# http://about.travis-ci.org/docs/user/build-configuration/
+
+sudo: false
+language: java
+mvn: mvn2
+script: 
+  - cd maven-plugin ; mvn install
+  - cd scheme ; mvn install
+jdk:
+  - oraclejdk8
+notifications:
+  email:
+    - cch@transparencyrights.com

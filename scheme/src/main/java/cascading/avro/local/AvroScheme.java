@@ -119,7 +119,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @return Fields a cascading fields object with one field per Avro record field
      */
     @Override
-    public Fields retrieveSourceFields(FlowProcess<Properties> process, Tap tap) {
+    public Fields retrieveSourceFields(FlowProcess<? extends Properties> process, Tap tap) {
         if (schema == null) {
             // no need to open them all
             if (tap instanceof CompositeTap)
@@ -185,7 +185,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @param fields
      */
     @Override
-    public void presentSourceFields(FlowProcess<Properties> process, Tap tap, Fields fields) {
+    public void presentSourceFields(FlowProcess<? extends Properties> process, Tap tap, Fields fields) {
     }
 
     /**
@@ -196,7 +196,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @param fields
      */
     @Override
-    public void presentSinkFields(FlowProcess<Properties> flowProcess, Tap tap, Fields fields) {
+    public void presentSinkFields(FlowProcess<? extends Properties> flowProcess, Tap tap, Fields fields) {
     }
 
     /**
@@ -207,7 +207,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @param conf
      */
     @Override
-    public void sourceConfInit(FlowProcess<Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf) {
+    public void sourceConfInit(FlowProcess<? extends Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf) {
     }
 
     /**
@@ -218,7 +218,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @throws IOException
      */
     @Override
-    public void sourcePrepare(FlowProcess<Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) throws IOException {
+    public void sourcePrepare(FlowProcess<? extends Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) throws IOException {
         sourceCall.setContext(createInput(sourceCall.getInput()));
     }
 
@@ -242,7 +242,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @return returns {@code true} when a Tuple was successfully read
      */
     @Override
-    public boolean source(FlowProcess<Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) throws IOException {
+    public boolean source(FlowProcess<? extends Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) throws IOException {
 
         if (sourceCall.getContext().hasNext()) {
             IndexedRecord record = (IndexedRecord) sourceCall.getContext().next();
@@ -263,7 +263,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @throws IOException
      */
     @Override
-    public void sourceCleanup(FlowProcess<Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) throws IOException {
+    public void sourceCleanup(FlowProcess<? extends Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) throws IOException {
         sourceCall.getContext().close();
     }
 
@@ -275,7 +275,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @param conf
      */
     @Override
-    public void sinkConfInit(FlowProcess<Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf) {
+    public void sinkConfInit(FlowProcess<? extends Properties> flowProcess, Tap<Properties, InputStream, OutputStream> tap, Properties conf) {
     }
 
 
@@ -286,7 +286,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @param sinkCall
      */
     @Override
-    public void sinkPrepare(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) {
+    public void sinkPrepare(FlowProcess<? extends Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) {
         if (schema == null)
             throw new RuntimeException("Cannot have a null schema for the sink (yet).");
 
@@ -307,7 +307,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @param sinkCall    of SinkCall
      */
     @Override
-    public void sink(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) throws IOException {
+    public void sink(FlowProcess<? extends Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) throws IOException {
         TupleEntry tupleEntry = sinkCall.getOutgoingEntry();
 
         IndexedRecord record = new GenericData.Record(schema);
@@ -329,7 +329,7 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
      * @param sinkCall
      */
     @Override
-    public void sinkCleanup(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) {
+    public void sinkCleanup(FlowProcess<? extends Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) {
         try {
             sinkCall.getContext().flush();
             sinkCall.getContext().close();
@@ -362,9 +362,8 @@ public class AvroScheme extends Scheme<Properties, InputStream, OutputStream, Da
 
     @Override
     public int hashCode() {
-
-        return 31 * getSinkFields().hashCode() +
-                schema.hashCode();
+        return 31 * (getSinkFields() == null ? 0 : getSinkFields().hashCode()) +
+                (schema == null ? 0 : schema.hashCode());
     }
 }
 

@@ -119,7 +119,7 @@ public class AvroSchemeTest extends Assert {
     assertTrue(iterator.hasNext());
     final TupleEntry readEntry2 = iterator.next();
 
-    assertNull(readEntry2.get("aUnion"));
+    assertNull(readEntry2.getObject("aUnion"));
   }
 
   @Test
@@ -202,7 +202,7 @@ public class AvroSchemeTest extends Assert {
     assertTrue(iterator.hasNext());
     final TupleEntry readEntry1 = iterator.next();
 
-    assertTrue(readEntry1.get(0) instanceof Tuple);
+    assertTrue(readEntry1.getObject(0) instanceof Tuple);
     assertEquals(0, ((Tuple) readEntry1.getObject(0)).getInteger(0));
     assertEquals("the string", ((Tuple) readEntry1.getObject(0)).getString(1));
     assertEquals("outer string", readEntry1.getString(1));
@@ -668,7 +668,7 @@ public class AvroSchemeTest extends Assert {
 
     // create source and sink taps
     Tap docTap = new Lfs(new TextLine(new Fields("text")), docPath);
-    Tap wcTap = new Lfs(new AvroScheme(schema), wcPath, true);
+    Tap wcTap = new Lfs(new AvroScheme(schema), wcPath, SinkMode.REPLACE);
 
     // specify a regex operation to split the "document" text lines into a token stream
     Fields token = new Fields("token");
@@ -695,7 +695,7 @@ public class AvroSchemeTest extends Assert {
     // create source and sink taps
     // Source is Avro, note there is no schema needed. 
     Tap avroTap = new Lfs(new AvroScheme(), wcPath);
-    Tap finalTap = new Lfs(new TextDelimited(), finalPath, true);
+    Tap finalTap = new Lfs(new TextDelimited(), finalPath, SinkMode.REPLACE);
 
     Pipe avroPipe = new Pipe("wordcount");
     avroPipe = new GroupBy(avroPipe, new Fields("count"));

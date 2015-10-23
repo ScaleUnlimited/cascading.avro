@@ -89,7 +89,7 @@ public class PackedAvroScheme<T> extends AvroScheme {
      * @param sinkCall
      */
     @Override
-    public void sinkPrepare(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) {
+    public void sinkPrepare(FlowProcess<? extends Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) {
         if (schema == null)
             throw new RuntimeException("Cannot have a null schema for the sink (yet).");
 
@@ -106,7 +106,7 @@ public class PackedAvroScheme<T> extends AvroScheme {
      * @throws java.io.IOException
      */
     @Override
-    public void sink(FlowProcess<Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) throws IOException {
+    public void sink(FlowProcess<? extends Properties> flowProcess, SinkCall<DataFileWriter, OutputStream> sinkCall) throws IOException {
         TupleEntry tupleEntry = sinkCall.getOutgoingEntry();
         //noinspection unchecked
         sinkCall.getContext().append((T) tupleEntry.getObject(Fields.FIRST));
@@ -121,7 +121,7 @@ public class PackedAvroScheme<T> extends AvroScheme {
      * @return Fields The source cascading fields.
      */
     @Override
-    public Fields retrieveSourceFields(FlowProcess<Properties> flowProcess, Tap tap) {
+    public Fields retrieveSourceFields(FlowProcess<? extends Properties> flowProcess, Tap tap) {
         if (schema == null) {
             setSourceFields(Fields.UNKNOWN);
         } else {
@@ -139,7 +139,7 @@ public class PackedAvroScheme<T> extends AvroScheme {
      * @throws java.io.IOException
      */
     @Override
-    public boolean source(FlowProcess<Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) {
+    public boolean source(FlowProcess<? extends Properties> flowProcess, SourceCall<DataFileStream, InputStream> sourceCall) {
         if (sourceCall.getContext().hasNext()) {
             T record = (T) sourceCall.getContext().next();
             Tuple tuple = sourceCall.getIncomingEntry().getTuple();
